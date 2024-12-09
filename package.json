@@ -1,5 +1,12 @@
 {
   "name": "stockly",
+  "author": {
+    "name": "GabrielCaiana",
+    "email": "gabrielcaianaguedes@gmail.com",
+    "url": "https://gabrielcaiana.com",
+    "github": "https://github.com/gabrielcaiana",
+    "linkedin": "https://www.linkedin.com/in/gabrielcaiana/"
+  },
   "version": "0.1.0",
   "private": true,
   "scripts": {
