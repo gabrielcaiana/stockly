@@ -10,6 +10,9 @@ import {
 // this is responsible for the dynamic data fetching
 // export const dynamic = "force-dynamic";
 
+// dessa forma a página inteira vai ser gerada estática e vai ser revalidada a cada 60 segundos
+// export const revalidate = 60;
+
 const Products = async () => {
   const products = await chachedGetProducts();
 
