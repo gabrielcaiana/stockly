@@ -7,6 +7,10 @@ import { getProducts } from "../_data-access/product/get-products";
 const Products = async () => {
   const products = await getProducts();
 
+  // This is a workaround to avoid a Prisma error when serializing the data
+  // The error is: "Converting circular structure to JSON"
+  const parseProducts = JSON.parse(JSON.stringify(products));
+
   return (
     <div className="w-full space-y-8 bg-white p-8">
       <div className="flex w-full items-center justify-between">
@@ -23,7 +27,7 @@ const Products = async () => {
         </Button>
       </div>
 
-      <DataTable columns={productTableColumns as []} data={products} />
+      <DataTable columns={productTableColumns as []} data={parseProducts} />
     </div>
   );
 };
