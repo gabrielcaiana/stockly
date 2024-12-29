@@ -2,10 +2,16 @@ import { PlusIcon } from "lucide-react";
 import { Button } from "../_components/ui/button";
 import { DataTable } from "../_components/ui/data-table";
 import { productTableColumns } from "./_components/table-columns";
-import { getProducts } from "../_data-access/product/get-products";
+import {
+  chachedGetProducts,
+  // getProducts,
+} from "../_data-access/product/get-products";
+
+// this is responsible for the dynamic data fetching
+// export const dynamic = "force-dynamic";
 
 const Products = async () => {
-  const products = await getProducts();
+  const products = await chachedGetProducts();
 
   // This is a workaround to avoid a Prisma error when serializing the data
   // The error is: "Converting circular structure to JSON"
