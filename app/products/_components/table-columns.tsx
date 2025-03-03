@@ -1,20 +1,29 @@
 "use client";
 
+import { AlertDialog, AlertDialogTrigger } from "@/app/_components/ui/alert-dialog";
 import { Badge } from "@/app/_components/ui/badge";
 import { Button } from "@/app/_components/ui/button";
 
-import { 
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger } from "@/app/_components/ui/dropdown-menu";
+  DropdownMenuTrigger,
+} from "@/app/_components/ui/dropdown-menu";
+
 import { Product } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
-import { ClipboardCopyIcon, EditIcon, MoreHorizontalIcon, TrashIcon } from "lucide-react";
+import {
+  ClipboardCopyIcon,
+  EditIcon,
+  MoreHorizontalIcon,
+  TrashIcon,
+} from "lucide-react";
 
-import { toast } from "sonner"
+import { toast } from "sonner";
+import DeleteProductDialogContent from "./delete-dialog-content";
 
 const inStock = "IN_STOCK";
 
@@ -53,41 +62,47 @@ export const productTableColumns: ColumnDef<Product & { status: string }>[] = [
     accessorKey: "actions",
     header: "Ações",
     cell: (row) => {
-      const product = row.row.original
+      const product = row.row.original;
 
       const copyId = () => {
-        navigator.clipboard.writeText(product.id)
-        toast("ID copiado com sucesso!")
-      }  
+        navigator.clipboard.writeText(product.id);
+        toast("ID copiado com sucesso!");
+      };
 
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost">
-              <MoreHorizontalIcon size={16} />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuLabel>Ações</DropdownMenuLabel>
-            <DropdownMenuSeparator />
+        <AlertDialog>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost">
+                <MoreHorizontalIcon size={16} />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel>Ações</DropdownMenuLabel>
+              <DropdownMenuSeparator />
 
-            <DropdownMenuItem className="gap-1.5" onClick={copyId}>
-              <ClipboardCopyIcon size={16} />
-              Copiar ID
-            </DropdownMenuItem>
+              <DropdownMenuItem className="gap-1.5" onClick={copyId}>
+                <ClipboardCopyIcon size={16} />
+                Copiar ID
+              </DropdownMenuItem>
 
-            <DropdownMenuItem className="gap-1.5">
-              <EditIcon size={16} />
-              Editar
-            </DropdownMenuItem>
+              <DropdownMenuItem className="gap-1.5">
+                <EditIcon size={16} />
+                Editar
+              </DropdownMenuItem>
 
-            <DropdownMenuItem className="gap-1.5">
-              <TrashIcon size={16} />
-              Excluir
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )
-    }
-  }
+              <AlertDialogTrigger className="flex gap-1.5">
+                <DropdownMenuItem className="gap-1.5">
+                  <TrashIcon size={16} />
+                  Excluir
+                </DropdownMenuItem>
+              </AlertDialogTrigger>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <DeleteProductDialogContent product={product} />
+        </AlertDialog>
+      );
+    },
+  },
 ];
