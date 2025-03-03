@@ -2,12 +2,11 @@
 import { DataTable } from "../_components/ui/data-table";
 import { productTableColumns } from "./_components/table-columns";
 import {
+  // cachedGetRandomNumber,
   chachedGetProducts,
   // getProducts,
 } from "../_data-access/product/get-products";
 import CreateProductButton from "./_components/create-product-button";
-
-
 
 // this is responsible for the dynamic data fetching
 // export const dynamic = "force-dynamic";
@@ -17,6 +16,9 @@ import CreateProductButton from "./_components/create-product-button";
 
 const Products = async () => {
   const products = await chachedGetProducts();
+
+  // Exemplo para simular duas chamadas de servidor sendo atualizadas separadamente com revalidateTag
+  // const randomNumber = await cachedGetRandomNumber();
 
   // This is a workaround to avoid a Prisma error when serializing the data
   // The error is: "Converting circular structure to JSON"
@@ -31,11 +33,11 @@ const Products = async () => {
           </span>
           <h2 className="text-xl font-semibold">Produtos</h2>
         </div>
-
         <CreateProductButton />
+        {/* {randomNumber} */}
       </div>
 
-      <DataTable columns={productTableColumns as []} data={parseProducts} />
+      <DataTable columns={productTableColumns} data={parseProducts} />
     </div>
   );
 };
