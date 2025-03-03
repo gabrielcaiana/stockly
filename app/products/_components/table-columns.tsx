@@ -2,6 +2,7 @@
 
 import { Badge } from "@/app/_components/ui/badge";
 import { Button } from "@/app/_components/ui/button";
+
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -12,6 +13,8 @@ import {
 import { Product } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import { ClipboardCopyIcon, EditIcon, MoreHorizontalIcon, TrashIcon } from "lucide-react";
+
+import { toast } from "sonner"
 
 const inStock = "IN_STOCK";
 
@@ -52,7 +55,10 @@ export const productTableColumns: ColumnDef<Product & { status: string }>[] = [
     cell: (row) => {
       const product = row.row.original
 
-      const copyId = () => navigator.clipboard.writeText(product.id)
+      const copyId = () => {
+        navigator.clipboard.writeText(product.id)
+        toast("ID copiado com sucesso!")
+      }  
 
       return (
         <DropdownMenu>

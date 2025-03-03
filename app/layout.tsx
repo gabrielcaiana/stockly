@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Sidebar from "./_components/sidebar";
+import { Toaster } from "./_components/ui/sonner"
 
 import { Inter } from "next/font/google";
 
@@ -24,6 +25,7 @@ export default function RootLayout({
       <body className={`${inter.className} antialiased`}>
         <div className="flex h-full">
           <Sidebar />
+          <Toaster />
           {children}
         </div>
       </body>
