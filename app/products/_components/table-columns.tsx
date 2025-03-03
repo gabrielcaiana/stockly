@@ -66,7 +66,7 @@ export const productTableColumns: ColumnDef<Product & { status: string }>[] = [
 
       const copyId = () => {
         navigator.clipboard.writeText(product.id);
-        toast("ID copiado com sucesso!");
+        toast.success("ID copiado com sucesso!");
       };
 
       return (

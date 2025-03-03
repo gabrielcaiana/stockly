@@ -20,11 +20,11 @@ function DeleteProductDialogContent ( { product }: { product: DeleteDialogConten
   const handleContinueClick = async () => {
     try {
       await deleteProduct({ id: product.id });
-      toast("Produto excluído com sucesso");
+      toast.success("Produto excluído com sucesso");
     } catch (error) {
       console.error(error)
 
-      toast("Ocorreu um erro ao excluir o produto")
+      toast.error("Ocorreu um erro ao excluir o produto")
     }
   }
 
