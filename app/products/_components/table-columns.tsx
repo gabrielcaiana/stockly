@@ -1,6 +1,11 @@
 "use client";
 
-import { AlertDialog, AlertDialogTrigger } from "@/app/_components/ui/alert-dialog";
+import { useState } from "react";
+
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+} from "@/app/_components/ui/alert-dialog";
 import { Badge } from "@/app/_components/ui/badge";
 import { Button } from "@/app/_components/ui/button";
 
@@ -24,6 +29,8 @@ import {
 
 import { toast } from "sonner";
 import DeleteProductDialogContent from "./delete-dialog-content";
+import { Dialog, DialogTrigger } from "@/app/_components/ui/dialog";
+import UpsertProductDialogDialog from "./upsert-dialog-content";
 
 const inStock = "IN_STOCK";
 
@@ -61,7 +68,9 @@ export const productTableColumns: ColumnDef<Product & { status: string }>[] = [
   {
     accessorKey: "actions",
     header: "Ações",
-    cell: (row) => {
+    cell: function ActionCell(row) {
+      const [editDialogIsOpen, setEditDialogIsOpen] = useState(false);
+
       const product = row.row.original;
 
       const copyId = () => {
@@ -71,36 +80,49 @@ export const productTableColumns: ColumnDef<Product & { status: string }>[] = [
 
       return (
         <AlertDialog>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost">
-                <MoreHorizontalIcon size={16} />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuLabel>Ações</DropdownMenuLabel>
-              <DropdownMenuSeparator />
+          <Dialog open={editDialogIsOpen} onOpenChange={setEditDialogIsOpen}>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost">
+                  <MoreHorizontalIcon size={16} />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuLabel>Ações</DropdownMenuLabel>
+                <DropdownMenuSeparator />
 
-              <DropdownMenuItem className="gap-1.5" onClick={copyId}>
-                <ClipboardCopyIcon size={16} />
-                Copiar ID
-              </DropdownMenuItem>
-
-              <DropdownMenuItem className="gap-1.5">
-                <EditIcon size={16} />
-                Editar
-              </DropdownMenuItem>
-
-              <AlertDialogTrigger className="flex gap-1.5">
-                <DropdownMenuItem className="gap-1.5">
-                  <TrashIcon size={16} />
-                  Excluir
+                <DropdownMenuItem className="gap-1.5" onClick={copyId}>
+                  <ClipboardCopyIcon size={16} />
+                  Copiar ID
                 </DropdownMenuItem>
-              </AlertDialogTrigger>
-            </DropdownMenuContent>
-          </DropdownMenu>
 
-          <DeleteProductDialogContent product={product} />
+                <DialogTrigger asChild>
+                  <DropdownMenuItem className="gap-1.5">
+                    <EditIcon size={16} />
+                    Editar
+                  </DropdownMenuItem>
+                </DialogTrigger>
+
+                <AlertDialogTrigger className="flex gap-1.5">
+                  <DropdownMenuItem className="gap-1.5">
+                    <TrashIcon size={16} />
+                    Excluir
+                  </DropdownMenuItem>
+                </AlertDialogTrigger>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <UpsertProductDialogDialog defaultValues={{
+              id: product.id,
+              name: product.name,
+              price: Number(product.price),
+              stock: product.stock,
+            }}
+            onSuccess={() => setEditDialogIsOpen(false)}
+            />
+
+            <DeleteProductDialogContent product={product} />
+          </Dialog>
         </AlertDialog>
       );
     },

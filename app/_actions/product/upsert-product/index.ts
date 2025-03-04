@@ -2,13 +2,17 @@
 
 import { db } from "@/app/_lib/prisma"
 import { revalidateTag } from "next/cache"
-import { createProductSchema, CreateProductSchema } from "./schema"
+import { upsertProductSchema, UpsertProductSchema } from "./schema"
 
-export const createProduct = async (data: CreateProductSchema)  => {
-  createProductSchema.parse(data)
+export const upsertProduct = async (data: UpsertProductSchema)  => {
+  upsertProductSchema.parse(data)
 
-  await db.product.create({
-    data
+  const { id, ...payload } = data
+
+  await db.product.upsert({
+    where: { id: id ?? "" },
+    update: payload,
+    create: payload
   }),
   
   // o revalidatePath é uma função que vai revalidar a página que foi passada como argumento
