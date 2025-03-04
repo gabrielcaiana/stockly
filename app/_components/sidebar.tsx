@@ -14,7 +14,7 @@ const Sidebar = () => {
           Dashboard
         </SidebarButton>
 
-        <SidebarButton href="products">
+        <SidebarButton href="/products">
           <PackageIcon size={20} />
           Produtos
         </SidebarButton>
