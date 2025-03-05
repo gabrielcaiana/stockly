@@ -67,8 +67,8 @@ const TableDropdownMenu = ({ product }: TableDropdownMenuProps) => {
               </DropdownMenuItem>
             </DialogTrigger>
 
-            <AlertDialogTrigger className="flex gap-1.5">
-              <DropdownMenuItem className="gap-1.5">
+            <AlertDialogTrigger className="flex gap-1.5 w-full">
+              <DropdownMenuItem className="gap-1.5 w-full">
                 <TrashIcon size={16} />
                 Excluir
               </DropdownMenuItem>
