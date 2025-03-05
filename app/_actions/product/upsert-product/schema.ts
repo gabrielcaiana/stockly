@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const upsertProductSchema = z.object({
-  id: z.string().optional(),
+  id: z.string().cuid().optional(),
   name: z.string().trim().min(1, {
     message: "O nome do produto é obrigatório",
   }),
