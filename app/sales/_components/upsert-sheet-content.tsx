@@ -1,7 +1,7 @@
 "use client";
 
 import { z } from "zod";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import {
   SheetContent,
@@ -106,6 +106,13 @@ const UpsertSheetContent = ({
     form.reset();
   };
 
+  const productsTotal = useMemo(() => {
+    return selectedProducts.reduce(
+      (acc, product) => acc + product.price * product.quantity,
+      0,
+    );
+  }, [selectedProducts]);
+
   return (
     <SheetContent>
       <SheetHeader>
@@ -184,14 +191,7 @@ const UpsertSheetContent = ({
         <TableFooter>
           <TableRow>
             <TableCell colSpan={3}>Total</TableCell>
-            <TableCell>
-              {currency(
-                selectedProducts.reduce(
-                  (acc, product) => acc + product.price * product.quantity,
-                  0,
-                ),
-              )}
-            </TableCell>
+            <TableCell>{currency(productsTotal)}</TableCell>
           </TableRow>
         </TableFooter>
       </Table>
