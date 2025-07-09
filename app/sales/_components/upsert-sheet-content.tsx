@@ -27,6 +27,7 @@ import { Product } from "@prisma/client";
 import {
   Table,
   TableBody,
+  TableCaption,
   TableCell,
   TableFooter,
   TableHead,
@@ -34,6 +35,7 @@ import {
   TableRow,
 } from "@/app/_components/ui/table";
 import { currency } from "@/app/_helpers/currency";
+import SalesTableDropdownMenu from "./table-dropdown-menu";
 
 interface UpsertSheetContentProps {
   products: Product[];
@@ -113,6 +115,12 @@ const UpsertSheetContent = ({
     );
   }, [selectedProducts]);
 
+  const onDelete = (productId: string) => {
+    setSelectedProducts((currentProducts) => {
+      return currentProducts.filter((product) => product.id !== productId);
+    });
+  };
+
   return (
     <SheetContent>
       <SheetHeader>
@@ -168,12 +176,14 @@ const UpsertSheetContent = ({
       </Form>
 
       <Table>
+        <TableCaption>Lista de produtos adicionados a venda.</TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead className="w-[100px]">Produto</TableHead>
             <TableHead>Preço unitário</TableHead>
             <TableHead>Quantidade</TableHead>
             <TableHead>Total</TableHead>
+            <TableHead>Ações</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -185,6 +195,9 @@ const UpsertSheetContent = ({
               <TableCell>
                 {currency(product.price * product.quantity)}
               </TableCell>
+              <TableCell>
+                <SalesTableDropdownMenu product={product} onDelete={onDelete} />
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -192,6 +205,7 @@ const UpsertSheetContent = ({
           <TableRow>
             <TableCell colSpan={3}>Total</TableCell>
             <TableCell>{currency(productsTotal)}</TableCell>
+            <TableCell></TableCell>
           </TableRow>
         </TableFooter>
       </Table>
