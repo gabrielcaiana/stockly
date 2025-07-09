@@ -24,15 +24,25 @@ import { Combobox, ComboboxOption } from "@/app/_components/ui/combobox";
 import { Button } from "@/app/_components/ui/button";
 import { PlusIcon } from "lucide-react";
 import { Product } from "@prisma/client";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/app/_components/ui/table";
+import { currency } from "@/app/_helpers/currency";
 
 interface UpsertSheetContentProps {
-  products: Product[]
+  products: Product[];
   productOptions: ComboboxOption[];
 }
 
 const formSchema = z.object({
   productId: z.string().cuid({
-    message: "O produto 'é obrigatório",
+    message: "O produto é obrigatório",
   }),
   quantity: z.coerce.number().int().positive(),
 });
@@ -40,14 +50,19 @@ const formSchema = z.object({
 type FormSchema = z.infer<typeof formSchema>;
 
 interface SelectedProduct {
-  id: string
-  name: string
-  price: number
-  quantity: number
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
 }
 
-const UpsertSheetContent = ({ products, productOptions }: UpsertSheetContentProps) => {
-  const [selectedProducts, setSelectedProducts] = useState<SelectedProduct[]>([])
+const UpsertSheetContent = ({
+  products,
+  productOptions,
+}: UpsertSheetContentProps) => {
+  const [selectedProducts, setSelectedProducts] = useState<SelectedProduct[]>(
+    [],
+  );
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
@@ -58,20 +73,38 @@ const UpsertSheetContent = ({ products, productOptions }: UpsertSheetContentProp
   });
 
   const onSubmit = (data: FormSchema) => {
-    const selectedProduct = products.find(product => product.id === data.productId)
+    const selectedProduct = products.find(
+      (product) => product.id === data.productId,
+    );
 
-    if(!selectedProduct) return
+    if (!selectedProduct) return;
 
-    setSelectedProducts((prev) => [
-      ...prev,
-      {
-        id: selectedProduct.id,
-        name: selectedProduct.name,
-        price: Number(selectedProduct.price),
-        quantity: data.quantity
+    setSelectedProducts((prev) => {
+      const existingProduct = prev.find(
+        (product) => product.id === selectedProduct.id,
+      );
+
+      if (existingProduct) {
+        return prev.map((product) =>
+          product.id === selectedProduct.id
+            ? { ...product, quantity: product.quantity + data.quantity }
+            : product,
+        );
       }
-    ])
-  }
+
+      return [
+        ...prev,
+        {
+          id: selectedProduct.id,
+          name: selectedProduct.name,
+          price: Number(selectedProduct.price),
+          quantity: data.quantity,
+        },
+      ];
+    });
+
+    form.reset();
+  };
 
   return (
     <SheetContent>
@@ -125,20 +158,43 @@ const UpsertSheetContent = ({ products, productOptions }: UpsertSheetContentProp
             Adicionar produto à venda
           </Button>
         </form>
-        
-
-        { selectedProducts.length > 0 && (
-          <div className="space-y-4">
-            {selectedProducts.map(product => (
-              <div key={product.id}>
-                <p>{product.name}</p>
-                <p>{product.price}</p>
-                <p>{product.quantity}</p>
-              </div>
-            ))}
-          </div>
-        )}
       </Form>
+
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-[100px]">Produto</TableHead>
+            <TableHead>Preço unitário</TableHead>
+            <TableHead>Quantidade</TableHead>
+            <TableHead>Total</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {selectedProducts.map((product) => (
+            <TableRow key={product.id}>
+              <TableCell className="font-medium">{product.name}</TableCell>
+              <TableCell>{currency(product.price)}</TableCell>
+              <TableCell>{product.quantity}</TableCell>
+              <TableCell>
+                {currency(product.price * product.quantity)}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+        <TableFooter>
+          <TableRow>
+            <TableCell colSpan={3}>Total</TableCell>
+            <TableCell>
+              {currency(
+                selectedProducts.reduce(
+                  (acc, product) => acc + product.price * product.quantity,
+                  0,
+                ),
+              )}
+            </TableCell>
+          </TableRow>
+        </TableFooter>
+      </Table>
     </SheetContent>
   );
 };
